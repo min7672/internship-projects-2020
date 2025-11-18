@@ -1,0 +1,22 @@
+# --- 공통 ---
+*.log
+*.tmp
+*.bak
+*.pid
+
+# --- MQTT Broker (Mosquitto) ---
+broker/data/
+broker/log/
+broker/mosquitto/data/
+broker/mosquitto/log/
+
+# --- InfluxDB ---
+influxdb/data/
+influxdb/wal/
+influxdb/meta/
+
+# --- Docker ---
+**/docker-compose.override.yml
+**/.env
+**/tmp/
+**/cache/
