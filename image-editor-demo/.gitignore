@@ -10,6 +10,7 @@ __pycache__/
 venv/
 .env/
 .venv/
+web/
 
 # Django 기본 파일
 db.sqlite3
