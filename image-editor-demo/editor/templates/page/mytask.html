@@ -1,0 +1,71 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/base/table.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h2 class="tm-page-title">나의 작업</h2>
+
+<div class="tm-table-box">
+    <table class="tm-table">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>작업명</th>
+                <th>요청</th>
+                <th>상태</th>
+                <th>내 역할</th>
+                <th>승인 상태</th>
+                <th>기능</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for item in tasks %}
+            {% with task=item.task ass=item.assignment %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.patient_id_masked }}</td>
+                <td>{{ task.task_request }}</td>
+                <td>{{ task.get_progress_status_display }}</td>
+
+                <td>
+                    {% if ass.role == "worker" %}작업자{% endif %}
+                    {% if ass.role == "reviewer" %}검수자{% endif %}
+                </td>
+
+                <td>
+                    {% if ass.status == "pending" %}
+                        승인 대기
+                    {% elif ass.status == "active" %}
+                        진행 중
+                    {% elif ass.status == "finished" %}
+                        완료
+                    {% elif ass.status == "rejected" %}
+                        거절됨
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if task.action_is_button %}
+                        <form method="post" action="{% url 'task_apply' task.id %}">
+                            {% csrf_token %}
+                            <button class="tm-btn" type="submit">{{ task.action_label }}</button>
+                        </form>
+                    {% else %}
+                        <span class="tm-btn-disabled">{{ task.action_label }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endwith %}
+        {% empty %}
+            <tr><td colspan="7" class="tm-empty">나의 작업이 없습니다.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

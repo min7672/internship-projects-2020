@@ -5,4 +5,4 @@ class EditorConfig(AppConfig):
     name = "editor"
 
     def ready(self):
-        import editor.infrastructure.signals
+        from .infrastructure import signals

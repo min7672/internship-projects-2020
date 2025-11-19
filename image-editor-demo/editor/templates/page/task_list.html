@@ -1,0 +1,201 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}작업 목록{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/base/table.css' %}">
+<style>
+    /* 관리자 탭 버튼 */
+    .tm-tab-btn {
+        padding: 8px 14px;
+        margin-right: 8px;
+        border: 1px solid #666;
+        background: #f0f0f0;
+        cursor: pointer;
+    }
+    .tm-tab-active {
+        background: #333;
+        color: white;
+    }
+    .tm-hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h2 class="tm-page-title">작업 목록</h2>
+
+{% if is_admin %}
+<div class="mb20">
+    <button id="tab-user" class="tm-tab-btn tm-tab-active">작업 목록</button>
+    <button id="tab-admin" class="tm-tab-btn">승인 대기</button>
+</div>
+{% endif %}
+
+<!-- ========================= -->
+<!-- 일반 사용자 / 공통 작업 목록 -->
+<!-- ========================= -->
+<div id="section-user">
+
+    <!-- 페이지 크기 선택 -->
+    <form method="get" class="tm-pagesize">
+        <label>
+            페이지당 개수
+            <select name="per_page" onchange="this.form.submit()">
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10개</option>
+                <option value="20" {% if per_page == 20 %}selected{% endif %}>20개</option>
+                <option value="50" {% if per_page == 50 %}selected{% endif %}>50개</option>
+            </select>
+        </label>
+
+        <input type="hidden" name="sort" value="{{ sort }}">
+        <input type="hidden" name="dir" value="{{ direction }}">
+    </form>
+
+    <div class="tm-table-box">
+        <table class="tm-table">
+            <thead>
+                {% with dir=direction %}
+                <tr>
+                    <th><a href="?sort=id&dir={% if sort == 'id' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">번호</a></th>
+                    <th><a href="?sort=title&dir={% if sort == 'title' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">작업 이름</a></th>
+                    <th><a href="?sort=reward&dir={% if sort == 'reward' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">보수 금액</a></th>
+                    <th><a href="?sort=request&dir={% if sort == 'request' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">요구 작업</a></th>
+                    <th><a href="?sort=created&dir={% if sort == 'created' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">등록 일자</a></th>
+                    <th><a href="?sort=progress_status&dir={% if sort == 'progress_status' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">진행 상태</a></th>
+                    <th>기능</th>
+                </tr>
+                {% endwith %}
+            </thead>
+
+            <tbody>
+                {% for task in page_obj %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.patient_id_masked }}</td>
+                    <td>{{ task.reward }}원</td>
+                    <td>{{ task.task_request }}</td>
+                    <td>{{ task.created_at|date:"Y년 m월 d일" }}</td>
+                    <td>{{ task.get_progress_status_display }}</td>
+                    <td>
+                        {% if task.action_is_button %}
+                            <form method="post" action="{% url 'task_apply' task.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="tm-btn">{{ task.action_label }}</button>
+                            </form>
+                        {% else %}
+                            <span class="tm-btn-disabled">{{ task.action_label }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="tm-empty">표시할 작업이 없습니다.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========================= -->
+    <!-- 페이지네이션 -->
+    <!-- ========================= -->
+    <div class="tm-pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">« 처음</a>
+            <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">‹ 이전</a>
+        {% endif %}
+
+        <span class="tm-current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">다음 ›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">마지막 »</a>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- 관리자 전용 승인 목록 -->
+<!-- ========================= -->
+{% if is_admin %}
+<div id="section-admin" class="tm-hidden">
+
+    <h3 class="tm-page-title">승인 대기 목록</h3>
+
+    <div class="tm-table-box">
+        <table class="tm-table">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>작업명</th>
+                    <th>신청자</th>
+                    <th>요청</th>
+                    <th>단계</th>
+                    <th>승인</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for ass in pending_assignments %}
+                <tr>
+                    <td>{{ ass.task.id }}</td>
+                    <td>{{ ass.task.patient_id_masked }}</td>
+                    <td>{{ ass.user.nickname }}</td>
+                    <td>{{ ass.task.task_request }}</td>
+                    <td>{{ ass.task.get_progress_status_display }}</td>
+
+                    <td>
+                        <form method="post" action="{% url 'task_approve' ass.task.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="tm-btn">승인</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="tm-empty">승인 대기 작업이 없습니다.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const tabUser = document.getElementById("tab-user");
+    const tabAdmin = document.getElementById("tab-admin");
+    const sectionUser = document.getElementById("section-user");
+    const sectionAdmin = document.getElementById("section-admin");
+
+    if (!tabUser || !tabAdmin) return;
+
+    tabUser.addEventListener("click", () => {
+        tabUser.classList.add("tm-tab-active");
+        tabAdmin.classList.remove("tm-tab-active");
+
+        sectionUser.classList.remove("tm-hidden");
+        sectionAdmin.classList.add("tm-hidden");
+    });
+
+    tabAdmin.addEventListener("click", () => {
+        tabAdmin.classList.add("tm-tab-active");
+        tabUser.classList.remove("tm-tab-active");
+
+        sectionUser.classList.add("tm-hidden");
+        sectionAdmin.classList.remove("tm-hidden");
+    });
+});
+</script>
+{% endblock %}

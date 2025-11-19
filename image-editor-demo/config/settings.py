@@ -32,7 +32,7 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = [h.strip() for h in env("ALLOWED_HOSTS", default="").split(",") if h.strip()]
 
-SITE_ID = 3
+SITE_ID = 2
 # Application definition
 
 INSTALLED_APPS = [

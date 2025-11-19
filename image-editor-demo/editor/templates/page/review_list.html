@@ -1,0 +1,92 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}검토 목록{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/base/table.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h2 class="tm-page-title">검토 목록</h2>
+
+<!-- 페이지 크기 선택 -->
+<form method="get" class="tm-pagesize">
+    <label>
+        페이지당 개수
+        <select name="per_page" onchange="this.form.submit()">
+            <option value="10" {% if per_page == 10 %}selected{% endif %}>10개</option>
+            <option value="20" {% if per_page == 20 %}selected{% endif %}>20개</option>
+            <option value="50" {% if per_page == 50 %}selected{% endif %}>50개</option>
+        </select>
+    </label>
+
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="dir" value="{{ direction }}">
+</form>
+
+<div class="tm-table-box">
+    <table class="tm-table">
+        <thead>
+            {% with dir=direction %}
+            <tr>
+                <th><a href="?sort=id&dir={% if sort == 'id' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">번호</a></th>
+                <th><a href="?sort=task_name&dir={% if sort == 'task_name' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">작업명</a></th>
+                <th><a href="?sort=request&dir={% if sort == 'request' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">요구 작업</a></th>
+                <th><a href="?sort=status&dir={% if sort == 'status' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">현재 상태</a></th>
+                <th><a href="?sort=updated&dir={% if sort == 'updated' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">수정일</a></th>
+                <th>기능</th>
+            </tr>
+            {% endwith %}
+        </thead>
+
+        <tbody>
+        {% for item in page_obj %}
+            {% with task=item.task ass=item.assignment %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.patient_id_masked }}</td>
+                <td>{{ task.task_request }}</td>
+                <td>{{ task.get_progress_status_display }}</td>
+                <td>{{ task.updated_at|date:"Y-m-d H:i" }}</td>
+
+                <td>
+                    {% if task.action_is_button %}
+                        <form method="post" action="{% url 'task_apply' task.id %}">
+                            {% csrf_token %}
+                            <button class="tm-btn" type="submit">{{ task.action_label }}</button>
+                        </form>
+                    {% else %}
+                        <span class="tm-btn-disabled">{{ task.action_label }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endwith %}
+        {% empty %}
+            <tr>
+                <td colspan="6" class="tm-empty">검토할 작업이 없습니다.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ========================= -->
+<!-- 페이지네이션 -->
+<!-- ========================= -->
+<div class="tm-pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">« 처음</a>
+        <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">‹ 이전</a>
+    {% endif %}
+
+    <span class="tm-current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">다음 ›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">마지막 »</a>
+    {% endif %}
+</div>
+
+{% endblock %}
