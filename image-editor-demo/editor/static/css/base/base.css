@@ -1,0 +1,45 @@
+/* =========================================================
+   기본 레이아웃 & 폰트 설정
+   ---------------------------------------------------------
+   - 전체 페이지 공통 폰트, 컬러, 배경
+   - reset 성격의 최소 설정
+========================================================= */
+body { margin:0; font-family:"Noto Sans KR",sans-serif; font-size:15px; color:#333; background:#f7f7f7; }
+a { color:#FFFFFF; text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* 페이지 공통 컨테이너 */
+.container { width:1180px; margin:0 auto; padding:0 10px; }
+
+/* =========================================================
+   HEADER 영역
+   ---------------------------------------------------------
+   <header>
+     └ topbar        (로그인/마이페이지/로그아웃 등 상단 유틸)
+     └ nav-area      (로고 + 메인 메뉴)
+========================================================= */
+
+/* ---- 헤더 기본 박스 ---- */
+.site-header { background: linear-gradient(90deg, #1F2A3C, #4C6F99); padding: 2px 0 6px; }
+
+/* ---- 상단 유틸 메뉴 ---- */
+.topbar { text-align:right; padding:6px 0; font-size:13px; }
+.topbar ul { margin:0; padding:0; list-style:none; }
+.topbar li { display:inline-block; margin-left:14px; }
+
+/* ---- 로고 + 메인 네비게이션 ---- */
+.text-logo { font-size: 24px; font-weight: 700; color: #FFFFFF; }
+.nav-area { display:flex; align-items:center; justify-content:space-between; padding:2px 0; }
+.logo img {  width: 70px; height: auto; }
+
+.main-nav ul { margin:0; padding:0; list-style:none; display:flex; }
+.main-nav li { margin-left:32px; font-weight:600; font-size:16px; }
+.main-nav a { padding:8px 6px; }
+
+/* CONTENT 영역 */
+.site-content { min-height:600px; background:#ffffff; padding:30px 20px; margin-top:20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+
+
+/* FOOTER 영역 */
+.site-footer { background: #24344A; color: #d9dce3; padding:30px 0; margin-top:40px; }
+.site-footer .copy { margin-top:8px; font-size:13px; color:#b7bcc7; }

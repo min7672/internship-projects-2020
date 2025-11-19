@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>{% block title %}의료 이미지 편집 데모{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+    <!-- 기본 스타일 -->
+    <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
+
+    <!-- jQuery (필수 최소) -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+
+    {% block extra_head %}
+    {% endblock %}
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+
+        <!-- 상단 유틸 -->
+        <div class="container topbar">
+            <ul>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'mypage' %}">마이페이지</a></li>
+                <li>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <a href="#" onclick="this.closest('form').submit()">로그아웃</a>
+                    </form>
+                </li>
+                {% else %}
+                <li><a href="{% url 'login' %}">로그인</a></li>
+                <li><a href="{% url 'signup' %}">회원가입</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- 로고 + 메뉴 -->
+        <div class="container nav-area">
+            <h1 class="logo">
+                <a href="/"> 
+                    <img src="{% static 'img/logo.png' %}" alt="Home">
+                </a>
+            </h1>
+
+            {% if user.is_authenticated %}
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{% url 'task_list' %}">업무 목록</a></li>
+                    <li><a href="{% url 'review_list' %}">검토 목록</a></li>
+                    <li><a href="{% url 'mypage' %}">내 작업</a></li>
+                    <li><a href="{% url 'task_overview' %}">업무 현황</a></li>
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+
+    </header>
+    <!-- END HEADER -->
+
+
+    <!-- MAIN CONTENT -->
+    <main class="site-content container">
+        {% block content %}{% endblock %}
+    </main>
+    <!-- END MAIN -->
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container">
+            <p class="footer-info">
+                대표전화 : 010-0000-0000 / 이메일 : gsm7311@naver.com
+                <br>주소 : OO시 OO구 OO로 00
+            </p>
+            <p class="copy">© 의료 이미지 편집 데모</p>
+        </div>
+    </footer>
+
+    {% block extra_script %}
+    {% endblock %}
+</body>
+
+</html>

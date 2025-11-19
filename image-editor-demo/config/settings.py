@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 
 from pathlib import Path
+from datetime import timedelta
 import os
 import environ
 
@@ -31,16 +32,26 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = [h.strip() for h in env("ALLOWED_HOSTS", default="").split(",") if h.strip()]
 
+SITE_ID = 3
 # Application definition
 
 INSTALLED_APPS = [
-    'editor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'django.contrib.sites',
+
+    # social only
+    "allauth",
+    'allauth.account',
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.kakao",
+
+    "editor.apps.EditorConfig", 
 ]
 
 MIDDLEWARE = [
@@ -51,6 +62,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # allauth 필수 미들웨어
+    'allauth.account.middleware.AccountMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -105,7 +120,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# 로그인/소셜로그인 이후 이동할 기본 페이지
+LOGIN_REDIRECT_URL = "/"          # 또는 "/mypage/", reverse("home") 등
+LOGOUT_REDIRECT_URL = "/"         # 로그아웃 후 이동
 
+# allauth redirect 설정 (선택)
+ACCOUNT_LOGIN_REDIRECT_URL = "/"          # 계정 로그인 후
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"         # account_logout 사용 시
+ACCOUNT_SIGNUP_REDIRECT_URL = "/"        # 소셜 최초 가입 후
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    "kakao": {
+        # 필요한 경우 scope 세팅도 가능
+        # "SCOPE": ["account_email", "profile_nickname"],
+
+        "AUTH_PARAMS": {
+            "prompt": "login",
+        },
+    },
+}
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 LANGUAGE_CODE = "en-us"
@@ -118,7 +153,7 @@ USE_TZ = env.bool("USE_TZ", default=True)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'port','static')
+    os.path.join(BASE_DIR,'editor','static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

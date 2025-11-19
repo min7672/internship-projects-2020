@@ -1,0 +1,25 @@
+/* =========================================================
+   메인 화면 Hero 영역
+========================================================= */
+.home-hero { padding:40px 10px 32px; border-bottom:1px solid #e3e6ee; }
+.home-hero__text { max-width:680px; }
+.home-hero__title { margin:0 0 10px; font-size:26px; font-weight:700; color:#1F2A3C; }
+.home-hero__subtitle { margin:0 0 18px; font-size:15px; line-height:1.6; color:#555; }
+.home-hero__actions { display:flex; gap:10px; }
+
+/* 버튼 공통 */
+.btn-primary { display:inline-block; padding:9px 18px; font-size:14px; border-radius:4px; background:#2A6FE4; color:#fff; text-decoration:none; }
+.btn-primary:hover { background:#2257b8; text-decoration:none; }
+.btn-ghost { display:inline-block; padding:9px 16px; font-size:14px; border-radius:4px; border:1px solid #c0c6d8; color:#1F2A3C; text-decoration:none; background:#fff; }
+.btn-ghost:hover { border-color:#9aa3bd; text-decoration:none; }
+
+/* =========================================================
+   주요 기능 카드 섹션
+========================================================= */
+.home-section { padding:28px 10px 10px; }
+.home-section__title { margin:0 0 18px; font-size:18px; font-weight:600; color:#1F2A3C; }
+
+.feature-grid { display:flex; gap:16px; }
+.feature-card { flex:1; padding:18px 16px; background:#ffffff; border-radius:6px; border:1px solid #e0e4f0; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+.feature-card__title { margin:0 0 8px; font-size:15px; font-weight:600; color:#24344A; }
+.feature-card__text { margin:0; font-size:14px; line-height:1.6; color:#555; }

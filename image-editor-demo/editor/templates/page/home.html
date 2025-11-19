@@ -1,0 +1,51 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}의료 이미지 편집 데모{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/page/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="home-hero">
+    <div class="home-hero__text">
+        <h2 class="home-hero__title">의료 이미지 편집 데모</h2>
+        <p class="home-hero__subtitle">
+            CT · MRI 등 의료 이미지를 불러와<br>
+            시퀀스 결합, 라벨링, 편집 과정을 실험하기 위한 개인 데모 프로젝트입니다.
+        </p>
+    </div>
+</section>
+
+<section class="home-section">
+    <h3 class="home-section__title">주요 기능</h3>
+    <div class="feature-grid">
+        <article class="feature-card">
+            <h4 class="feature-card__title">이미지 편집 흐름</h4>
+            <p class="feature-card__text">
+                의료용 시퀀스 파일을 불러와서 PNG로 추출하고,<br>
+                드래그 기반 편집 도구로 필요한 위치를 표시합니다.
+            </p>
+        </article>
+
+        <article class="feature-card">
+            <h4 class="feature-card__title">데이터 관리</h4>
+            <p class="feature-card__text">
+                작업 단위(Task)별로 이미지 묶음을 관리하고,<br>
+                진행률과 상태를 한 눈에 확인할 수 있도록 설계했습니다.
+            </p>
+        </article>
+
+        <article class="feature-card">
+            <h4 class="feature-card__title">작업자 · 검수자 역할</h4>
+            <p class="feature-card__text">
+                작업자(Worker)와 검수자(Reviewer) 역할을 분리하여,<br>
+                작업 → 검수 → 완료 단계가 명확하게 보이도록 구성합니다.
+            </p>
+        </article>
+    </div>
+</section>
+
+{% endblock %}
