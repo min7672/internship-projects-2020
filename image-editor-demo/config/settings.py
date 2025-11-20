@@ -32,7 +32,7 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = [h.strip() for h in env("ALLOWED_HOSTS", default="").split(",") if h.strip()]
 
-SITE_ID = 2
+SITE_ID = 3
 # Application definition
 
 INSTALLED_APPS = [
@@ -156,6 +156,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'editor','static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
