@@ -31,18 +31,28 @@
         <thead>
             {% with dir=direction %}
             <tr>
-                <th><a href="?sort=id&dir={% if sort == 'id' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">번호</a></th>
-                <th><a href="?sort=task_name&dir={% if sort == 'task_name' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">작업명</a></th>
-                <th><a href="?sort=request&dir={% if sort == 'request' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">요구 작업</a></th>
-                <th><a href="?sort=status&dir={% if sort == 'status' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">현재 상태</a></th>
-                <th><a href="?sort=updated&dir={% if sort == 'updated' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">수정일</a></th>
+                <th><a
+                        href="?sort=id&dir={% if sort == 'id' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">번호</a>
+                </th>
+                <th><a
+                        href="?sort=task_name&dir={% if sort == 'task_name' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">작업명</a>
+                </th>
+                <th><a
+                        href="?sort=request&dir={% if sort == 'request' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">요구
+                        작업</a></th>
+                <th><a
+                        href="?sort=status&dir={% if sort == 'status' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">현재
+                        상태</a></th>
+                <th><a
+                        href="?sort=updated&dir={% if sort == 'updated' and dir == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">수정일</a>
+                </th>
                 <th>기능</th>
             </tr>
             {% endwith %}
         </thead>
 
         <tbody>
-        {% for item in page_obj %}
+            {% for item in page_obj %}
             {% with task=item.task ass=item.assignment %}
             <tr>
                 <td>{{ task.id }}</td>
@@ -53,21 +63,21 @@
 
                 <td>
                     {% if task.action_is_button %}
-                        <form method="post" action="{% url 'task_apply' task.id %}">
-                            {% csrf_token %}
-                            <button class="tm-btn" type="submit">{{ task.action_label }}</button>
-                        </form>
+                    <form method="post" action="{% url 'task_apply' task.id %}">
+                        {% csrf_token %}
+                        <button class="tm-btn" type="submit">{{ task.action_label }}</button>
+                    </form>
                     {% else %}
-                        <span class="tm-btn-disabled">{{ task.action_label }}</span>
+                    <span class="tm-btn-disabled">{{ task.action_label }}</span>
                     {% endif %}
                 </td>
             </tr>
             {% endwith %}
-        {% empty %}
+            {% empty %}
             <tr>
                 <td colspan="6" class="tm-empty">검토할 작업이 없습니다.</td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
 </div>
@@ -77,15 +87,17 @@
 <!-- ========================= -->
 <div class="tm-pagination">
     {% if page_obj.has_previous %}
-        <a href="?page=1&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">« 처음</a>
-        <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">‹ 이전</a>
+    <a href="?page=1&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">« 처음</a>
+    <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">‹
+        이전</a>
     {% endif %}
 
     <span class="tm-current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
 
     {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">다음 ›</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">마지막 »</a>
+    <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">다음 ›</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&sort={{ sort }}&dir={{ direction }}">마지막
+        »</a>
     {% endif %}
 </div>
 

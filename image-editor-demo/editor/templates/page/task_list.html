@@ -7,20 +7,9 @@
 <link rel="stylesheet" href="{% static 'css/base/table.css' %}">
 <style>
     /* 관리자 탭 버튼 */
-    .tm-tab-btn {
-        padding: 8px 14px;
-        margin-right: 8px;
-        border: 1px solid #666;
-        background: #f0f0f0;
-        cursor: pointer;
-    }
-    .tm-tab-active {
-        background: #333;
-        color: white;
-    }
-    .tm-hidden {
-        display: none;
-    }
+    .tm-tab-btn { padding: 8px 14px; margin-right: 8px; border: 1px solid #666; background: #f0f0f0; cursor: pointer;}
+    .tm-tab-active { background: #333; color: white; }
+    .tm-hidden { display: none; }
 </style>
 {% endblock %}
 
@@ -172,30 +161,5 @@
 {% endblock %}
 
 {% block extra_script %}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const tabUser = document.getElementById("tab-user");
-    const tabAdmin = document.getElementById("tab-admin");
-    const sectionUser = document.getElementById("section-user");
-    const sectionAdmin = document.getElementById("section-admin");
-
-    if (!tabUser || !tabAdmin) return;
-
-    tabUser.addEventListener("click", () => {
-        tabUser.classList.add("tm-tab-active");
-        tabAdmin.classList.remove("tm-tab-active");
-
-        sectionUser.classList.remove("tm-hidden");
-        sectionAdmin.classList.add("tm-hidden");
-    });
-
-    tabAdmin.addEventListener("click", () => {
-        tabAdmin.classList.add("tm-tab-active");
-        tabUser.classList.remove("tm-tab-active");
-
-        sectionUser.classList.add("tm-hidden");
-        sectionAdmin.classList.remove("tm-hidden");
-    });
-});
-</script>
+<script src="{% static 'js/page/task_list.js' %}"></script>
 {% endblock %}

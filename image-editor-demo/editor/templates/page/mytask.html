@@ -24,7 +24,7 @@
         </thead>
 
         <tbody>
-        {% for item in tasks %}
+            {% for item in tasks %}
             {% with task=item.task ass=item.assignment %}
             <tr>
                 <td>{{ task.id }}</td>
@@ -39,33 +39,87 @@
 
                 <td>
                     {% if ass.status == "pending" %}
-                        승인 대기
+                    승인 대기
                     {% elif ass.status == "active" %}
-                        진행 중
+                    진행 중
                     {% elif ass.status == "finished" %}
-                        완료
+                    완료
                     {% elif ass.status == "rejected" %}
-                        거절됨
+                    거절됨
                     {% endif %}
                 </td>
 
                 <td>
-                    {% if task.action_is_button %}
-                        <form method="post" action="{% url 'task_apply' task.id %}">
-                            {% csrf_token %}
-                            <button class="tm-btn" type="submit">{{ task.action_label }}</button>
-                        </form>
+                    {# 나의 작업에서는 신청 버튼 없음 #}
+                    {# 작업자로 배정되어 있고(active)일 때만 작업 진입 버튼 노출 #}
+                    {% if ass.role == "worker" and ass.status == "active" %}
+                    <button type="button" class="tm-btn tm-btn-start-work" data-task-id="{{ task.id }}"
+                        data-work-url="{% url 'task_work' task.id %}">
+                        작업하러 가기
+                    </button>
                     {% else %}
-                        <span class="tm-btn-disabled">{{ task.action_label }}</span>
+                    <span class="tm-btn-disabled">-</span>
                     {% endif %}
                 </td>
             </tr>
             {% endwith %}
-        {% empty %}
-            <tr><td colspan="7" class="tm-empty">나의 작업이 없습니다.</td></tr>
-        {% endfor %}
+            {% empty %}
+            <tr>
+                <td colspan="7" class="tm-empty">나의 작업이 없습니다.</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
 
+{% endblock %}
+{# ===== 모달 내부 컨텐츠 (슬라이드) ===== #}
+{% block modal_content %}
+<h3 class="tm-modal-title">작업 시나리오 안내</h3>
+
+<p class="tm-modal-desc">
+    작업 화면으로 이동하기 전에 단계별 시나리오를 확인해 주세요.
+</p>
+
+<div class="tm-modal-slide-wrapper">
+    <div class="tm-modal-slide-img-wrap">
+        <img id="tm-slide-image" src="" alt="작업 시나리오" />
+    </div>
+
+    <div class="tm-modal-slide-controls">
+        <button type="button" id="tm-slide-prev" class="tm-btn-secondary tm-btn-sm">
+            ◀ 이전
+        </button>
+        <span id="tm-slide-indicator" class="tm-slide-indicator">
+            1 / 5
+        </span>
+        <button type="button" id="tm-slide-next" class="tm-btn-secondary tm-btn-sm">
+            다음 ▶
+        </button>
+    </div>
+</div>
+
+<div class="tm-modal-footer">
+    <button type="button" class="tm-btn-secondary" onclick="tmCloseModal()">
+        닫기
+    </button>
+    <button type="button" id="tm-work-modal-start" class="tm-btn">
+        작업 페이지로 이동
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    // Django → JS 경로 전달
+    window.MYTASK_SLIDES = [
+        "{% static 'img/guide/task_description1.png' %}",
+        "{% static 'img/guide/task_description2.png' %}",
+        "{% static 'img/guide/task_description3.png' %}",
+        "{% static 'img/guide/task_description4.png' %}",
+        "{% static 'img/guide/task_description5.png' %}",
+    ];
+</script>
+
+<script src="{% static 'js/page/mytask.js' %}"></script>
 {% endblock %}
