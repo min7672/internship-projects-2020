@@ -1,0 +1,232 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}이미지 작업{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/page/task_work.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="tw-layout">
+
+    <!-- top-section -->
+    <section class="tw-top">
+
+        <!-- top-left: meta -->
+        <div class="tw-top-left">
+            <div class="tw-meta-row">
+                <span class="tw-meta-label">[진행률]</span>
+                <span class="tw-meta-value">
+                    {{ current_index|default:"0" }} / {{ total_count|default:"0" }}
+                </span>
+            </div>
+            <div class="tw-meta-row">
+                <span class="tw-meta-label">Patient Code</span>
+                <span class="tw-meta-value">{{ patient_code|default:"CT_LC*****" }}</span>
+            </div>
+            <div class="tw-meta-row">
+                <span class="tw-meta-label">Pair Code</span>
+                <span class="tw-meta-value">{{ pair_code|default:"PET23 - CT23" }}</span>
+            </div>
+        </div>
+
+        <!-- top-right: controls -->
+        <div class="tw-top-right">
+
+            <!-- progress -->
+            <div class="tw-progress-row">
+                <div class="tw-progress-label">전체 진행률</div>
+                <div class="tw-progress-bar">
+                    <div class="tw-progress-fill" style="width: {{ progress_rate|default:'0' }}%;"></div>
+                </div>
+                <div class="tw-progress-percent">
+                    {{ progress_rate|default:"0" }}%
+                </div>
+            </div>
+
+            <!-- navigation -->
+            <div class="tw-nav-row">
+                <div>
+                    <button type="button" class="tw-btn-sm tw-btn-ghost" data-action="prev">
+                        이전
+                    </button>
+                    <button type="button" class="tw-btn-sm tw-btn-ghost" data-action="next">
+                        다음
+                    </button>
+                </div>
+                <div>
+                    <span class="tw-chip">단축키</span>
+                    <span class="tw-helper-text">
+                        Space: 페어 전환 · ←/→: 이전/다음 · S: 저장 · C: 캡처도구 활성
+                    </span>
+                </div>
+            </div>
+
+            <!-- quick-actions -->
+            <div class="tw-nav-row">
+                <div>
+                    <label class="tw-nav-label">이동</label>
+                    <input type="number" min="1" class="tw-nav-input" id="tw-jump-index"
+                        value="{{ current_index|default:'1' }}">
+                    <button type="button" class="tw-btn-sm tw-btn-ghost" data-action="jump">
+                        이동
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="tw-btn tw-btn-outline tw-btn-block" data-action="capture-tool">
+                        캡처 도구
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="tw-btn tw-btn-primary tw-btn-save" data-action="save">
+                        저장하기
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- top-section:end -->
+
+
+    <!-- mid-section -->
+    <section class="tw-main" data-editor-root>
+
+        <!-- panel: PET -->
+        <div class="tw-image-panel">
+            <header class="tw-panel-header">
+                <span class="tw-panel-title">PET</span>
+            </header>
+            <div class="tw-image-stage tw-stage-dark">
+                <img id="tw-pet-image" src="data:image/png;base64,{{ pet_image_b64 }}" alt="PET"
+                    class="tw-base-image tw-edit-target" data-image-type="pet">
+            </div>
+        </div>
+
+        <!-- panel: CT -->
+        <div class="tw-image-panel">
+            <header class="tw-panel-header">
+                <span class="tw-panel-title">CT</span>
+            </header>
+            <div class="tw-image-stage tw-stage-dark">
+                <img id="tw-ct-image" src="data:image/png;base64,{{ ct_image_b64 }}" alt="CT"
+                    class="tw-base-image tw-edit-target" data-image-type="ct">
+            </div>
+        </div>
+
+    </section>
+    <!-- mid-section:end -->
+
+
+    <!-- bottom-section -->
+    <section class="tw-bottom">
+
+        <!-- bottom-left -->
+        <div class="tw-bottom-left">
+
+            <!-- image-select -->
+            <div class="tw-card">
+                <h3 class="tw-card-title">이미지 선택</h3>
+
+                <label class="tw-radio">
+                    <input type="radio" name="overlay_target" value="pet" checked>
+                    <span>PET 기준 편집</span>
+                </label>
+
+                <label class="tw-radio">
+                    <input type="radio" name="overlay_target" value="ct">
+                    <span>CT 기준 편집</span>
+                </label>
+            </div>
+
+            <!-- memo -->
+            <div class="tw-card tw-memo-card">
+                <h3 class="tw-card-title">메모</h3>
+                <textarea class="tw-textarea" rows="6" placeholder="작업 중 참고 메모를 입력하세요."></textarea>
+            </div>
+        </div>
+
+
+        <!-- bottom-right -->
+        <div class="tw-bottom-right">
+
+            <!-- tools -->
+            <div class="tw-card tw-tools-card">
+                <h3 class="tw-card-title">작업 툴</h3>
+
+                <div class="tw-slider-row">
+                    <label>PET 투명도</label>
+                    <div class="tw-slider-wrap">
+                        <input type="range" min="0" max="100" value="50" data-control="opacity">
+                        <span class="tw-slider-value" data-output="opacity">
+                            50%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="tw-slider-row">
+                    <label>확대</label>
+                    <div class="tw-slider-wrap">
+                        <input type="range" min="50" max="200" value="100" data-control="zoom">
+                        <span class="tw-slider-value" data-output="zoom">
+                            100%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="tw-slider-row">
+                    <label>회전</label>
+                    <div class="tw-slider-wrap">
+                        <input type="range" min="-180" max="180" value="0" data-control="rotate">
+                        <span class="tw-slider-value" data-output="rotate">
+                            0°
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- last-capture -->
+            <div class="tw-card tw-last-file-card" data-last-capture-container>
+                <div class="tw-card-header">
+                    <h3 class="tw-card-title">캡처 파일</h3>
+                </div>
+
+                <div class="tw-last-file-body">
+                    {% if last_capture %}
+                    <div class="tw-last-file-info">
+                        <div class="tw-last-file-main">
+                            <span class="tw-last-file-label">파일명</span>
+                            <a href="{{ last_capture.download_url }}" class="tw-last-file-name"
+                                title="{{ last_capture.filename }}">
+                                {{ last_capture.filename }}
+                            </a>
+                        </div>
+
+                        {% if last_capture.path %}
+                        <div class="tw-last-file-sub">
+                            <span class="tw-last-file-label">경로</span>
+                            <span class="tw-last-file-path" title="{{ last_capture.path }}">
+                                {{ last_capture.path }}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="tw-empty-text">
+                        저장된 캡처 파일이 없습니다.
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- bottom-section:end -->
+
+</div>
+
+
+
+{% endblock %}

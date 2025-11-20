@@ -11,9 +11,11 @@
 
     <!-- 기본 스타일 -->
     <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base/modal.css' %}">
 
     <!-- jQuery (필수 최소) -->
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/base/modal.js' %}"></script>
 
     {% block extra_head %}
     {% endblock %}
@@ -45,7 +47,7 @@
         <!-- 로고 + 메뉴 -->
         <div class="container nav-area">
             <h1 class="logo">
-                <a href="/"> 
+                <a href="/">
                     <img src="{% static 'img/logo.png' %}" alt="Home">
                 </a>
             </h1>
@@ -56,7 +58,6 @@
                     <li><a href="{% url 'task_list' %}">업무 목록</a></li>
                     <li><a href="{% url 'review_list' %}">검토 목록</a></li>
                     <li><a href="{% url 'mytask' %}">내 작업</a></li>
-                    <li><a href="{% url 'task_overview' %}">업무 현황</a></li>
                 </ul>
             </nav>
             {% endif %}
@@ -83,6 +84,16 @@
             <p class="copy">© 의료 이미지 편집 데모</p>
         </div>
     </footer>
+
+    <!-- ====================================== -->
+    <!-- 공통 모달 ROOT (모든 페이지에서 사용 가능) -->
+    <!-- ====================================== -->
+    <div id="tm-modal-backdrop" class="tm-modal-backdrop tm-hidden">
+        <div class="tm-modal-window">
+            {% block modal_content %}{% endblock %}
+        </div>
+    </div>
+
 
     {% block extra_script %}
     {% endblock %}

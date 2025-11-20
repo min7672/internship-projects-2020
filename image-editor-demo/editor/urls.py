@@ -18,6 +18,6 @@ urlpatterns = [
     path("tasks/", views.task_list, name="task_list"),
     path("tasks/<int:task_id>/apply/", views.task_apply, name="task_apply"),
     path("reviews/", views.review_list, name="review_list"),
-    path("tasks/overview/", views.task_overview, name="task_overview"),
     path("tasks/<int:task_id>/approve/", views.task_approve, name="task_approve"),
+    path("task/<int:task_id>/work/", views.task_work, name="task_work"),
 ]
